@@ -10,10 +10,12 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-let initPoints, shapeGeometry;
+let initPoints, initSticks, shapeGeometry;
 let clock, container, scene, camera, orbit,axesHelper, order;
-let width = 3; 
-let height = 3;
+let width = 10; 
+let height = 10;
+let damping = 0.98;
+let k = 0.1;
 
 window.onload = function () {
     init();
@@ -66,11 +68,7 @@ function testAnimation()
         dt = 0
     }
     initPoints.updatePoints(dt);
-   
-    sticks.forEach(function (stick) 
-    {
-        stick.updatePos();
-    });
+    initSticks.updateSticks();
     
     for(let i = 0; i < order.length; i++)
     {
@@ -96,9 +94,10 @@ function testAnimation()
 function clothInitialization()
 {
 
-    let cloth = initCloth(width, height, scene);
+    let cloth = initCloth(width, height, damping, k, scene );
     initPoints = cloth[0];
     sticks = cloth[1];
+    initSticks = cloth[2];
     points = initPoints.points;
     let pos = [];
     let squares = (width - 1) * (height - 1);

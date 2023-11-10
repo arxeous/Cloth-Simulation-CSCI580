@@ -11,7 +11,7 @@ export default class InitPoint
         let material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
 
         this.mesh = new THREE.InstancedMesh(sphere, material, this.points.length);
-        console.log(this.points.length);
+        //console.log(this.points.length);
         this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
         scene.add(this.mesh);
     }
@@ -21,7 +21,7 @@ export default class InitPoint
         for(let i = 0; i < this.points.length; i++)
         {
             let point = this.points[i];
-            point.updatePos(dt);
+            point.update(dt);
             object.position.set(point.position.x, point.position.y, point.position.z);    
             object.updateMatrix();
             this.mesh.setMatrixAt(i, object.matrix);
