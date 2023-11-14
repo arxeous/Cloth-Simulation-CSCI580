@@ -1,14 +1,17 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import { initCloth } from '../cloth/clothInit';
-
-
-
+import gx1 from '../../textures/gx1.jpg'    
+import gx2 from '../../textures/gx2.jpg'
+import gy1 from '../../textures/gy1.jpg'
+import gy2 from '../../textures/gy2.jpg'
+import gz1 from '../../textures/gz1.jpg'
+import gz2 from '../../textures/gz2.jpg'
+import gr1 from '../../textures/grass_1.jpg'
 
 // Three js uses webgl as the underlying graphics renderer, we set that up here
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-
 
 let initPoints, initSticks, shapeGeometry;
 let clock, container, scene, camera, orbit,axesHelper, order;
@@ -34,6 +37,25 @@ function init()
 
     // We need a scene and a camera, if we want to even view something in the first place. Set that up here
     scene = new THREE.Scene();
+    //const loader = new THREE.TextureLoader();
+
+    //Create texture for background
+    const loader = new THREE.CubeTextureLoader();
+    const textureCube = loader.load( [gx2, gx1, gy1, gy2, gz1, gz2] );
+    scene.background = textureCube;
+    
+    //Create a floor for the scene
+    const texture = new THREE.TextureLoader().load(gr1);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 20, 20 );
+    const geometry = new THREE.PlaneGeometry( 1000, 1000 );
+    const material = new THREE.MeshBasicMaterial( {map: texture, side: THREE.BackSide} );
+    floor = new THREE.Mesh( geometry, material );
+    floor.rotation.x += 1.5708;
+    floor.translateZ(0.5);
+    scene.add( floor );
+
     // FOV, Aspect ratio, near plane clipping plane, far plane clipping plane
     camera = new THREE.PerspectiveCamera(
         75,
@@ -42,13 +64,16 @@ function init()
         1000
     );
     // Set the camera to some default position
-    camera.position.set(1, 2, 5);
+    camera.position.set(20, 5, 15);
 
     // OrbitControls is what allows us to control the camera using the mouse. 
     // The library may have to be changed by us when considering being able to click on menus
     // without moving the camera, etc.
     orbit = new OrbitControls(camera, renderer.domElement);
-    
+    orbit.zoomToCursor = true;
+    orbit.maxDistance = 50;
+    //orbit.maxPolarAngle = 1.5;
+
     // Renders an axes on screen for us to have a point of reference
     axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
