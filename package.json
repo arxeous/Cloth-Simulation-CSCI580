@@ -3,6 +3,7 @@
         "parcel": "^2.10.2"
     },
     "dependencies": {
+        "lil-gui": "^0.19.1",
         "three": "^0.158.0"
     },
     "@parcel/resolver-default": {

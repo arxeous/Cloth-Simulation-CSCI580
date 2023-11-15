@@ -8,6 +8,7 @@ import gy2 from '../../textures/gy2.jpg'
 import gz1 from '../../textures/gz1.jpg'
 import gz2 from '../../textures/gz2.jpg'
 import gr1 from '../../textures/grass_1.jpg'
+import { GUI } from 'lil-gui';
 
 // Three js uses webgl as the underlying graphics renderer, we set that up here
 const renderer = new THREE.WebGLRenderer();
@@ -24,6 +25,12 @@ window.onload = function () {
     init();
     clothInitialization();
     testAnimation();
+}
+
+consoleGui = {
+    addWind: false,
+    addBall: false,
+    changeMass: 1
 }
 
 
@@ -74,6 +81,12 @@ function init()
     orbit.maxDistance = 50;
     //orbit.maxPolarAngle = 1.5;
 
+    // testing gui to see if it appears
+    const gui = new GUI();
+    gui.add(consoleGui, 'addWind').name("Enable wind");
+    gui.add(consoleGui, 'addBall').name("Show ball");
+    gui.add(consoleGui, 'changeMass', 0, 3 ).name("Particle Mass");
+
     // Renders an axes on screen for us to have a point of reference
     axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
@@ -92,7 +105,7 @@ function testAnimation()
     {
         dt = 0
     }
-    initPoints.updatePoints(dt);
+    initPoints.updatePoints(dt,consoleGui.changeMass);
     initSticks.updateSticks();
     
     for(let i = 0; i < order.length; i++)
@@ -118,8 +131,7 @@ function testAnimation()
 
 function clothInitialization()
 {
-
-    let cloth = initCloth(width, height, damping, k, scene );
+    let cloth = initCloth(width, height, damping, k, scene, consoleGui.changeMass);
     initPoints = cloth[0];
     sticks = cloth[1];
     initSticks = cloth[2];

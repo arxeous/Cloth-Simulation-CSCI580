@@ -50,7 +50,7 @@ export default class Point
         this.force.add(force.clone());
     }
 
-    update(dt)
+    update(dt, particleMass)
     {
             let Vel = new THREE.Vector3((this.position.x - this.PrevPosition.x), (this.position.y - this.PrevPosition.y), (this.position.z - this.PrevPosition.z));
             Vel.multiplyScalar(this.damping);
@@ -58,6 +58,7 @@ export default class Point
 
             let temp = new THREE.Vector3(0, gravity, 0);
             let Acc = temp.clone().add(this.force.negate());
+            this.mass = particleMass;
             Acc.divideScalar(this.mass);
 
             if(!this.anchor)
