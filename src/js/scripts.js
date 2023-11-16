@@ -172,6 +172,8 @@ function clothInitialization()
 
     shapeGeometry.computeVertexNormals();
     shapeGeometry.computeBoundingBox();
+
+    
     var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.DoubleSide});
 
     shape = new THREE.Mesh(shapeGeometry, material);
