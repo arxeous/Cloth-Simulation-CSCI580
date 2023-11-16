@@ -4,7 +4,7 @@ import InstanceSticks from './sticksInit.js'
 import Point from './point.js';
 import Stick from './stick.js';
 
-export function initCloth(width, height, damping, k, scene)
+export function initCloth(width, height, damping, k, scene, particleMass)
 {
     let completeMesh = [];
     let points = [];
@@ -13,7 +13,8 @@ export function initCloth(width, height, damping, k, scene)
     {
         for(let j = 0; j < height; j++)
         {
-            points.push(new Point(i,j,0,0.5,false,damping));
+            //points.push(new Point(i,j,0,0.5,false,damping));
+            points.push(new Point(i,j,0,particleMass,false,damping));
         }
     }
 
