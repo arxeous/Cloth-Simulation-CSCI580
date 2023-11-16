@@ -85,7 +85,7 @@ function init()
     const gui = new GUI();
     gui.add(consoleGui, 'addWind').name("Enable wind");
     gui.add(consoleGui, 'addBall').name("Show ball");
-    gui.add(consoleGui, 'changeMass', 0, 3 ).name("Particle Mass");
+    gui.add(consoleGui, 'changeMass', 0.1, 3.0 ).name("Particle Mass");
 
     // Renders an axes on screen for us to have a point of reference
     axesHelper = new THREE.AxesHelper(5);
