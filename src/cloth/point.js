@@ -56,10 +56,12 @@ export default class Point
             Vel.multiplyScalar(this.damping);
             this.PrevPosition = this.position.clone();
 
-            let temp = new THREE.Vector3(0, gravity, 0);
+            let temp = new THREE.Vector3(0, gravity*particleMass, 0);
             let Acc = temp.clone().add(this.force.negate());
             this.mass = particleMass;
-            Acc.divideScalar(this.mass);
+            // removing this fixes the problem of where lower # mass makes it heavier 
+            // and higher # mass makes it stiffer
+            //Acc.divideScalar(this.mass);
 
             if(!this.anchor)
             {
@@ -70,7 +72,7 @@ export default class Point
             }
             
     }
-
+    
     updatePos(dt)
     {
         if(!this.anchor)
