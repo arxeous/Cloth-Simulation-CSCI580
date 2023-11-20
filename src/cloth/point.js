@@ -50,15 +50,22 @@ export default class Point
         this.force.add(force.clone());
     }
 
-    update(dt, particleMass)
+    update(dt, particleMass, wind, windAngle)
     {
             let Vel = new THREE.Vector3((this.position.x - this.PrevPosition.x), (this.position.y - this.PrevPosition.y), (this.position.z - this.PrevPosition.z));
             Vel.multiplyScalar(this.damping);
             this.PrevPosition = this.position.clone();
 
-            let temp = new THREE.Vector3(0, gravity*particleMass, 0);
+            let rad = windAngle*Math.PI*(1/180);
+            let windVelo = 0.12*0.5*1.2*wind*wind;
+
+            let temp = new THREE.Vector3(windVelo*Math.sin(rad), gravity*particleMass, windVelo*Math.cos(rad));
             let Acc = temp.clone().add(this.force.negate());
             this.mass = particleMass;
+
+            //let temp = new THREE.Vector3(0, gravity*particleMass, 0);
+            //let Acc = temp.clone().add(this.force.negate());
+            //this.mass = particleMass;
             // removing this fixes the problem of where lower # mass makes it heavier 
             // and higher # mass makes it stiffer
             //Acc.divideScalar(this.mass);
