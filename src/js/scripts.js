@@ -39,7 +39,7 @@ consoleGui = {
 
 
 function init()
-{
+{   
     clock = new THREE.Clock();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -85,7 +85,7 @@ function init()
         1000
     );
     // Set the camera to some default position
-    camera.position.set(20, 20, 30);
+    camera.position.set(30, 40, 40);
 
     // OrbitControls is what allows us to control the camera using the mouse. 
     // The library may have to be changed by us when considering being able to click on menus
