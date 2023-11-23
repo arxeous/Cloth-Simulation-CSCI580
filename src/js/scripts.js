@@ -14,10 +14,10 @@ import { GUI } from 'lil-gui';
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-let initPoints, initSticks, shapeGeometry;
+let initPoints, initSticks, idxGeometry;
 let clock, container, scene, camera, orbit,axesHelper, order;
-let width = 10; 
-let height = 10;
+let width = 30; 
+let height = 30;
 let damping = 0.98;
 let k = 0.1;
 
@@ -30,7 +30,11 @@ window.onload = function () {
 consoleGui = {
     addWind: false,
     addBall: false,
-    changeMass: 1
+    showMesh: false,
+
+    changeMass: 1,
+    //numCorners: 4
+
 }
 
 
@@ -44,6 +48,16 @@ function init()
 
     // We need a scene and a camera, if we want to even view something in the first place. Set that up here
     scene = new THREE.Scene();
+
+    const amb_light = new THREE.AmbientLight( 0xaaaaaa, 0.5); // soft white light
+    scene.add( amb_light );
+
+    var dir_light1 = new THREE.DirectionalLight( 0xcccccc );
+    dir_light1.position.set( 0, 1, 1 ).normalize();
+    var dir_light2 = new THREE.DirectionalLight( 0xcccccc );
+    dir_light2.position.set( 1, 1, 0 ).normalize();
+    scene.add(dir_light1);
+    scene.add(dir_light2);
     //const loader = new THREE.TextureLoader();
 
     //Create texture for background
@@ -71,21 +85,23 @@ function init()
         1000
     );
     // Set the camera to some default position
-    camera.position.set(20, 5, 15);
+    camera.position.set(20, 20, 30);
 
     // OrbitControls is what allows us to control the camera using the mouse. 
     // The library may have to be changed by us when considering being able to click on menus
     // without moving the camera, etc.
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.zoomToCursor = true;
-    orbit.maxDistance = 50;
+    //orbit.maxDistance = 50;
     //orbit.maxPolarAngle = 1.5;
 
     // testing gui to see if it appears
     const gui = new GUI();
     gui.add(consoleGui, 'addWind').name("Enable wind");
     gui.add(consoleGui, 'addBall').name("Show ball");
+    gui.add(consoleGui, 'showMesh').name("Show Mesh");
     gui.add(consoleGui, 'changeMass', 0.1, 3.0 ).name("Particle Mass");
+    //gui.add(consoleGui, 'numCorners', 1, 4, 1 ).name("Number of Anchored    Corners");
 
     // Renders an axes on screen for us to have a point of reference
     axesHelper = new THREE.AxesHelper(5);
@@ -94,8 +110,6 @@ function init()
 }
 
 
-
-// Animation function, updates the box with some spin about arbitrary axes
 function testAnimation()
 {
     requestAnimationFrame(testAnimation);
@@ -105,19 +119,22 @@ function testAnimation()
     {
         dt = 0
     }
-    initPoints.updatePoints(dt,consoleGui.changeMass);
-    initSticks.updateSticks();
+    initPoints.updatePoints(dt, consoleGui.changeMass, consoleGui.showMesh);
+    initSticks.updateSticks(consoleGui.showMesh);
     
     for(let i = 0; i < order.length; i++)
     {
         let idx = order[i];
         let pos = initPoints.points[idx].position;
-        shapeGeometry.attributes.position.setXYZ(i,pos.x, pos.y, pos.z );
+        idxGeometry.attributes.position.setXYZ(idx, pos.x, pos.y, pos.z );
     }
 
-    shapeGeometry.attributes.position.needsUpdate = true;
+    // if(consoleGui.numCorners == 3){
+    //     points[(width*height)-width].removeAnchor();
+    // }
 
-    shapeGeometry.computeVertexNormals();
+    idxGeometry.attributes.position.needsUpdate = true;
+    idxGeometry.computeVertexNormals();
 
     //update is what is watching and tracking the mouse movements/click. 
     //cant have movement wihtout it
@@ -132,14 +149,21 @@ function testAnimation()
 function clothInitialization()
 {
     let cloth = initCloth(width, height, damping, k, scene, consoleGui.changeMass);
+
     initPoints = cloth[0];
     sticks = cloth[1];
     initSticks = cloth[2];
+
     points = initPoints.points;
+   
+
     let pos = [];
     let squares = (width - 1) * (height - 1);
     order = [];
-    for(let i = 0; i < points.length; i++)
+
+    verts = cloth[3];
+    //for(let i = 0; i < points.length; i++)
+    for(let i = 0; i <points.length; i++) 
     {
         if(i + 1 < squares + (height - 1))
         {
@@ -155,33 +179,27 @@ function clothInitialization()
                 order.push(i+width);
 
                 // Triangle 2
-                pos.push(points[i+1].position);
-                pos.push(points[i+width].position);
                 pos.push(points[i+width+1].position);
-
-                order.push(i+1);
-                order.push(i+width);
+                pos.push(points[i+width].position);
+                pos.push(points[i+1].position);
+                                
                 order.push(i+width+1);
+                order.push(i+width);
+                order.push(i+1);
 
             }
         }
     }
 
-    shapeGeometry = new THREE.BufferGeometry();
-    shapeGeometry.setFromPoints(pos);
+    var clothMaterial = new THREE.MeshPhongMaterial({color: 0xff0000, side: THREE.DoubleSide, specular: 0x000000});
+    idxGeometry = new THREE.BufferGeometry();
+    idxGeometry.setIndex( order );
+    idxGeometry.setAttribute( 'position', new THREE.BufferAttribute( verts, 3 ) );
+    idxGeometry.computeVertexNormals();
+    idxGeometry.computeBoundingBox();
 
-    shapeGeometry.computeVertexNormals();
-    shapeGeometry.computeBoundingBox();
-
-    
-    var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.DoubleSide});
-
-    shape = new THREE.Mesh(shapeGeometry, material);
-
+    const shape = new THREE.Mesh( idxGeometry, clothMaterial );
     scene.add(shape);
-    
-
-
 }
 
 
