@@ -28,7 +28,8 @@ window.onload = function () {
 }
 
 consoleGui = {
-    addWind: false,
+    wind: 0,
+    windAngle: 0,
     addBall: false,
     changeMass: 1
 }
@@ -83,9 +84,10 @@ function init()
 
     // testing gui to see if it appears
     const gui = new GUI();
-    gui.add(consoleGui, 'addWind').name("Enable wind");
+    gui.add(consoleGui, 'wind', 0, 30).name("Wind Velocity");
+    gui.add(consoleGui, 'windAngle', 0, 360).name("Wind Angle");
     gui.add(consoleGui, 'addBall').name("Show ball");
-    gui.add(consoleGui, 'changeMass', 0, 3 ).name("Particle Mass");
+    gui.add(consoleGui, 'changeMass', 0.1, 7.0 ).name("Particle Mass");
 
     // Renders an axes on screen for us to have a point of reference
     axesHelper = new THREE.AxesHelper(5);
@@ -105,7 +107,7 @@ function testAnimation()
     {
         dt = 0
     }
-    initPoints.updatePoints(dt,consoleGui.changeMass);
+    initPoints.updatePoints(dt, consoleGui.changeMass, consoleGui.wind, consoleGui.windAngle);
     initSticks.updateSticks();
     
     for(let i = 0; i < order.length; i++)
