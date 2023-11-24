@@ -16,6 +16,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 let initPoints, initSticks, shapeGeometry;
 let clock, container, scene, camera, orbit,axesHelper, order;
+let ball;
 let width = 10; 
 let height = 10;
 let damping = 0.98;
@@ -24,6 +25,7 @@ let k = 0.1;
 window.onload = function () {
     init();
     clothInitialization();
+    ballInitialization();
     testAnimation();
 }
 
@@ -121,6 +123,22 @@ function testAnimation()
 
     shapeGeometry.computeVertexNormals();
 
+
+    var diff = new THREE.Vector3();
+    for (
+        particles = initPoints.points, i = 0, il = particles.length;
+        i < il;
+        i++
+      ) {
+        particle = particles[i];
+        var pos = particle.position;
+        diff.subVectors(pos, ball.position);
+        if (diff.length() < 2) {
+          // collided
+          diff.normalize().multiplyScalar(2);
+          pos.copy(ball.position).add(diff);
+        }
+      }
     //update is what is watching and tracking the mouse movements/click. 
     //cant have movement wihtout it
     orbit.update();
@@ -185,3 +203,17 @@ function clothInitialization()
 }
 
 
+
+
+
+function ballInitialization(){
+    var ballGeo = new THREE.SphereGeometry(2);
+    var ballMaterial = new THREE.MeshBasicMaterial();
+
+    sphere = new THREE.Mesh(ballGeo, ballMaterial);
+    sphere.position.x += 5;
+    sphere.position.y += 5;
+    sphere.position.z += 5;
+    ball = sphere;
+    scene.add(sphere);
+}
