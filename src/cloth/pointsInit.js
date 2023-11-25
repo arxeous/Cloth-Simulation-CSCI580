@@ -16,12 +16,13 @@ export default class InitPoint
         scene.add(this.mesh);
     }
 
-    updatePoints(dt, particleMass, meshBool)
+
+    updatePoints(dt, particleMass,meshBool, wind, windAngle)
     {
         for(let i = 0; i < this.points.length; i++)
         {
             let point = this.points[i];
-            point.update(dt, particleMass);
+            point.update(dt, particleMass, wind, windAngle);
             object.position.set(point.position.x, point.position.y, point.position.z);    
             object.updateMatrix();
             this.mesh.setMatrixAt(i, object.matrix);
