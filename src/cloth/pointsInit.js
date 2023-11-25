@@ -8,7 +8,7 @@ export default class InitPoint
     {
         this.points = points;
         let sphere = new THREE.SphereGeometry(radius, 16, 16);
-        let material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+        let material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, transparent: true});
 
         this.mesh = new THREE.InstancedMesh(sphere, material, this.points.length);
         //console.log(this.points.length);
@@ -16,7 +16,8 @@ export default class InitPoint
         scene.add(this.mesh);
     }
 
-    updatePoints(dt, particleMass, wind, windAngle)
+
+    updatePoints(dt, particleMass,meshBool, wind, windAngle)
     {
         for(let i = 0; i < this.points.length; i++)
         {
@@ -25,6 +26,12 @@ export default class InitPoint
             object.position.set(point.position.x, point.position.y, point.position.z);    
             object.updateMatrix();
             this.mesh.setMatrixAt(i, object.matrix);
+            if(meshBool){
+                this.mesh.material.opacity = 1;
+            }
+            else{
+                this.mesh.material.opacity = 0;
+            }
             let color = new THREE.Color(point.color);
             this.mesh.setColorAt(i, color);
         }
