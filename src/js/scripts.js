@@ -123,22 +123,27 @@ function testAnimation()
 
     shapeGeometry.computeVertexNormals();
 
-
-    var diff = new THREE.Vector3();
-    for (
-        particles = initPoints.points, i = 0, il = particles.length;
-        i < il;
-        i++
-      ) {
-        particle = particles[i];
-        var pos = particle.position;
-        diff.subVectors(pos, ball.position);
-        if (diff.length() < 2) {
-          // collided
-          diff.normalize().multiplyScalar(2);
-          pos.copy(ball.position).add(diff);
+    // Ball Collision
+    if (consoleGui.addBall){
+        ball.visible = true;
+        var diff = new THREE.Vector3();
+        for (
+            particles = initPoints.points, i = 0, il = particles.length;
+            i < il;
+            i++
+        ) {
+            particle = particles[i];
+            var pos = particle.position;
+            diff.subVectors(pos, ball.position);
+            if (diff.length() < 2) {
+            // collided
+            diff.normalize().multiplyScalar(2);
+            pos.copy(ball.position).add(diff);
+            }
         }
-      }
+    } else {
+        ball.visible = false;
+    }
     //update is what is watching and tracking the mouse movements/click. 
     //cant have movement wihtout it
     orbit.update();
