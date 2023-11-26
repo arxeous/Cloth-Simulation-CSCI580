@@ -18,6 +18,7 @@ let initPoints, initSticks, idxGeometry;
 let clock, container, scene, camera, orbit,axesHelper, order;
 
 let ball;
+let ball_radius = 7;
 let width = 30; 
 let height = 30;
 
@@ -156,9 +157,9 @@ function testAnimation()
             particle = particles[i];
             var pos = particle.position;
             diff.subVectors(pos, ball.position);
-            if (diff.length() < 5) {
+            if (diff.length() < ball_radius+0.2) {
             // collided
-            diff.normalize().multiplyScalar(5);
+            diff.normalize().multiplyScalar(ball_radius+0.2);
             pos.copy(ball.position).add(diff);
             }
         }
@@ -236,13 +237,14 @@ function clothInitialization()
 
 
 function ballInitialization(){
-    var ballGeo = new THREE.SphereGeometry(5);
-    var ballMaterial = new THREE.MeshPhongMaterial({color: 0x3344ff, side: THREE.DoubleSide, specular: 0x000000});
+    var ballGeo = new THREE.SphereGeometry(ball_radius);
+    var ballMaterial = new THREE.MeshPhongMaterial({color: 0x3344ff, side: THREE.DoubleSide, specular: 0x000000, transparent: true});
 
     sphere = new THREE.Mesh(ballGeo, ballMaterial);
-    sphere.position.x += 10;
+    sphere.material.opacity = 1;
+    sphere.position.x += 12;
     sphere.position.y += 20;
-    sphere.position.z += 10;
+    sphere.position.z += 12;
     ball = sphere;
     scene.add(sphere);
 }
