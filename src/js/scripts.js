@@ -156,9 +156,9 @@ function testAnimation()
             particle = particles[i];
             var pos = particle.position;
             diff.subVectors(pos, ball.position);
-            if (diff.length() < 2) {
+            if (diff.length() < 5) {
             // collided
-            diff.normalize().multiplyScalar(2);
+            diff.normalize().multiplyScalar(5);
             pos.copy(ball.position).add(diff);
             }
         }
