@@ -16,7 +16,7 @@ export default class Point
 
         if(!this.anchor)
         {
-            this.color = 0xffffff;
+            this.color = 0xFFFFFF;
         }
         else
         {
@@ -33,16 +33,15 @@ export default class Point
 
     setAnchor()
     {
-        this.anchor = !this.anchor;
+        this.anchor = true;
+        this.color = 0x4b91c5
+    }
 
-        if(!this.anchor)
-        {
-            this.color = 0xffffff;
-        }
-        else
-        {
-            this.color = 0x4b91c5
-        }
+    removeAnchor()
+    {
+        this.anchor = false;
+
+        this.color = 0xffffff;
     }
 
     applyForce(force)
@@ -96,6 +95,4 @@ export default class Point
 
         }
     }
-
-
 }
