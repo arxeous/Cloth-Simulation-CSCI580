@@ -236,13 +236,13 @@ function clothInitialization()
 
 
 function ballInitialization(){
-    var ballGeo = new THREE.SphereGeometry(2);
-    var ballMaterial = new THREE.MeshBasicMaterial();
+    var ballGeo = new THREE.SphereGeometry(5);
+    var ballMaterial = new THREE.MeshPhongMaterial({color: 0x3344ff, side: THREE.DoubleSide, specular: 0x000000});
 
     sphere = new THREE.Mesh(ballGeo, ballMaterial);
-    sphere.position.x += 5;
-    sphere.position.y += 5;
-    sphere.position.z += 5;
+    sphere.position.x += 10;
+    sphere.position.y += 20;
+    sphere.position.z += 10;
     ball = sphere;
     scene.add(sphere);
 }
