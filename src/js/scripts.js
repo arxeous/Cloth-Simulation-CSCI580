@@ -16,14 +16,19 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 let initPoints, initSticks, idxGeometry;
 let clock, container, scene, camera, orbit,axesHelper, order;
+
+let ball;
+let ball_radius = 7;
 let width = 30; 
 let height = 30;
+
 let damping = 0.98;
 let k = 0.1;
 
 window.onload = function () {
     init();
     clothInitialization();
+    ballInitialization();
     testAnimation();
 }
 
@@ -140,6 +145,27 @@ function testAnimation()
     idxGeometry.attributes.position.needsUpdate = true;
     idxGeometry.computeVertexNormals();
 
+    // Ball Collision
+    if (consoleGui.addBall){
+        ball.visible = true;
+        var diff = new THREE.Vector3();
+        for (
+            particles = initPoints.points, i = 0, il = particles.length;
+            i < il;
+            i++
+        ) {
+            particle = particles[i];
+            var pos = particle.position;
+            diff.subVectors(pos, ball.position);
+            if (diff.length() < ball_radius+0.2) {
+            // collided
+            diff.normalize().multiplyScalar(ball_radius+0.2);
+            pos.copy(ball.position).add(diff);
+            }
+        }
+    } else {
+        ball.visible = false;
+    }
     //update is what is watching and tracking the mouse movements/click. 
     //cant have movement wihtout it
     orbit.update();
@@ -207,3 +233,18 @@ function clothInitialization()
 }
 
 
+
+
+
+function ballInitialization(){
+    var ballGeo = new THREE.SphereGeometry(ball_radius);
+    var ballMaterial = new THREE.MeshPhongMaterial({color: 0x3344ff, side: THREE.DoubleSide, specular: 0x000000, transparent: true});
+
+    sphere = new THREE.Mesh(ballGeo, ballMaterial);
+    sphere.material.opacity = 1;
+    sphere.position.x += 12;
+    sphere.position.y += 20;
+    sphere.position.z += 12;
+    ball = sphere;
+    scene.add(sphere);
+}
